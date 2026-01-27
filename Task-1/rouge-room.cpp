@@ -21,6 +21,10 @@ class Room {
         }
 
         void move(int dx, int dy) {
+            if (x + dx < 0 || x + dx >= width || y + dy < 0 || y + dy >= height) {
+                std::cout << "Move out of bounds!" << std::endl;
+                return;
+            }
             x += dx;
             y += dy;
         }
