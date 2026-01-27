@@ -56,8 +56,22 @@ class Room {
 
 int main() {
     Room myRoom(10, 5);
-    myRoom.drawRoom();
+    char input;
+    bool running = true;
 
-    myRoom.move(3, 2);
-    myRoom.drawRoom();
+    while (running) {
+        myRoom.drawRoom();
+        std::cout << "Move (w/a/s/d) or q to quit: ";
+        std::cin >> input;
+
+        switch (input) {
+            case 'w': myRoom.move(0, -1); break;
+            case 's': myRoom.move(0, 1); break;
+            case 'a': myRoom.move(-1, 0); break;
+            case 'd': myRoom.move(1, 0); break;
+            case 'q': running = false; break;
+            default: break;
+        }
+    }
+    return 0;
 }
