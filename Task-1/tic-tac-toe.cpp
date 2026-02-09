@@ -1,10 +1,24 @@
 #include <iostream>
 
-bool play{true}
+bool play{true};
 bool played{false};
 
+void printBoard(){
+std::cout << 
+       "     I     I     \n"
+       "     I     I     \n"
+       "_____I_____I_____\n"
+       "     I     I     \n"
+       "     I     I     \n"
+       "_____I_____I_____\n"
+       "     I     I     \n"
+       "     I     I     \n"
+       "     I     I     \n";
+}
+
 int main(){
-    std::cout << "Hello world" ;
+
+    printBoard();
 
     if(play==true){
         //play tha game
