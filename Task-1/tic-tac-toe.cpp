@@ -1,7 +1,6 @@
 #include <iostream>
 
 bool play{true};
-bool played{false};
 
 void printBoard(){
 std::cout << 
@@ -19,26 +18,27 @@ std::cout <<
 bool checkPlayAgain(){
     bool validInput{false};
     char input{};
-    bool p{true};
-    while (validInput == false && played == true){
+    while (validInput == false){
         std::cout << "Would you like to play again? (y/n) " ;
         std::cin >> input;
         if(input!='y' && input!='n'){
             std::cout << "Invalid input, y/n only \n";
         }
         else if(input == 'y'){
-            validInput == true;
-            p=true;
+            return true;
         }
         else{
-            validInput=true;
-            p=false;
+            return false;
         } 
     } 
-    return p;
 }
 
-
+bool checkWinCons(int a[8]){
+    for(int i=0; i<3; i++){
+        if(a[i]==a[i+1]=a[i+2]){return true;}
+        if()
+    }
+}
 
 int main(){
 
@@ -46,8 +46,6 @@ int main(){
 
     while(play==true){
         //play tha game
-
-    played = true;
     
     play = checkPlayAgain();
     }
