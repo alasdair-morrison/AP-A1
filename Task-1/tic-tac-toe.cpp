@@ -35,9 +35,12 @@ bool checkPlayAgain(){
 
 bool checkWinCons(int a[8]){
     for(int i=0; i<3; i++){
-        if(a[i]==a[i+1]=a[i+2]){return true;}
-        if()
+        if(a[i]==a[i+3] && a[i]==a[i+6]){return true;}
+        if(a[i*3]==a[i*3+1] && a[i*3]==a[i*3+2]){return true};
     }
+    if(a[0]==a[4] && a[0]==a[8]){return true};
+    if(a[2]==a[4] && a[2]==a[6]){return true};
+    return false;
 }
 
 int main(){
