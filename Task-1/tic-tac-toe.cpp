@@ -1,6 +1,7 @@
 #include <iostream>
 
 bool play{true};
+char board[3][3]={"."};
 
 void printBoard(){
 std::cout << 
@@ -13,24 +14,44 @@ std::cout <<
        "     I     I     \n"
        "     I     I     \n"
        "     I     I     \n";
+
+for(int i; i<3;i++){
+    for(int j; j<3;j++){
+        std::cout<<board[i][j];
+    }
+    std::cout<<"\n";
+}
 }
 
-void playerMove(char b[2][2]){
+
+
+void playerMove(char b[3][3]) {
     int move{0};
-    while(true){
-        std::cout << "Enter your move, using numeric keyboard method.";
+
+    while (true) {
+        std::cout << "Enter your move (1-9) using numeric keypad layout): ";
         std::cin >> move;
-        int row = 2-(move-1)/3;
-        int col=(move-1)%3;
-        if (b[row][col]!= ' . '){
-            std::cout << "Invalid move, try again";
+
+        if (move < 1 or move > 9) {
+            std::cout << "Invalid number, try again.\n";
+            continue;
         }
-        else{
-            b[row][col]=' x ';
-            break;
+
+        int row = 2 - (move - 1) / 3;
+        int col = (move - 1) % 3;
+
+        std::cout << b[row][col];
+
+        if (b[row][col] != '.') {
+            std::cout << "Invalid move, try again.\n";
+        }
+        else {
+            b[row][col] = 'x';
+            return;
         }
     }
 }
+
 
 bool checkPlayAgain(){
     bool validInput{false};
@@ -62,11 +83,12 @@ bool checkWinCons(int a[8]){
 
 int main(){
 
-    printBoard();
+    //printBoard();
 
     while(play==true){
-        //play tha game
-    
+        playerMove(board);
+        printBoard();
+    std::cout<<board;
     play = checkPlayAgain();
     }
     std::cout <<"Thank you for playing!!";
