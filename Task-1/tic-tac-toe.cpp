@@ -4,16 +4,16 @@ bool play{true};
 char board[3][3]={"."};
 
 void printBoard(){
-std::cout << 
-       "     I     I     \n"
-       "     I     I     \n"
-       "_____I_____I_____\n"
-       "     I     I     \n"
-       "     I     I     \n"
-       "_____I_____I_____\n"
-       "     I     I     \n"
-       "     I     I     \n"
-       "     I     I     \n";
+// std::cout << 
+//        "     I     I     \n"
+//        "     I     I     \n"
+//        "_____I_____I_____\n"
+//        "     I     I     \n"
+//        "     I     I     \n"
+//        "_____I_____I_____\n"
+//        "     I     I     \n"
+//        "     I     I     \n"
+//        "     I     I     \n";
 
 for(int i; i<3;i++){
     for(int j; j<3;j++){
