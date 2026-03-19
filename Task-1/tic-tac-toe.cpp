@@ -1,9 +1,13 @@
 #include <iostream>
 
 bool play{true};
-char board[3][3]={"."};
+char board[3][3] = {
+    {'.', '.', '.'},
+    {'.', '.', '.'},
+    {'.', '.', '.'}
+};
 
-void printBoard(){
+void printBoard(char board[3][3]){
 // std::cout << 
 //        "     I     I     \n"
 //        "     I     I     \n"
@@ -15,8 +19,8 @@ void printBoard(){
 //        "     I     I     \n"
 //        "     I     I     \n";
 
-for(int i; i<3;i++){
-    for(int j; j<3;j++){
+for(int i = 0; i<3; i++){
+    for(int j = 0; j<3; j++){
         std::cout<<board[i][j];
     }
     std::cout<<"\n";
@@ -54,9 +58,8 @@ void playerMove(char b[3][3]) {
 
 
 bool checkPlayAgain(){
-    bool validInput{false};
     char input{};
-    while (validInput == false){
+    while (true){
         std::cout << "Would you like to play again? (y/n) " ;
         std::cin >> input;
         if(input!='y' && input!='n'){
@@ -86,10 +89,12 @@ int main(){
     //printBoard();
 
     while(play==true){
-        playerMove(board);
-        printBoard();
-    std::cout<<board;
-    play = checkPlayAgain();
+        for(int i=0; i<10; i++){
+            playerMove(board);
+            printBoard(board);
+            if 
+        }
+        play = checkPlayAgain();
     }
     std::cout <<"Thank you for playing!!";
 }
