@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <numeric> // Required for std::accumulate
 
 int main() {
     // 1. Declaration
@@ -58,6 +59,35 @@ int main() {
         }
         std::cout << std::endl;
     }
+// --- Part 3: Summing Vector Elements ---
+    std::cout << "\n--- Summing Vector Elements ---" << std::endl;
+    
+    std::vector<int> scores = {10, 20, 30, 40, 50};
+    
+    // Method 1: Using a loop
+    int sum_loop = 0;
+    for (int score : scores) {
+        sum_loop += score;
+    }
+    std::cout << "Sum using loop: " << sum_loop << std::endl;
+
+    // Method 2: Using std::accumulate (from <numeric>)
+    // std::accumulate(start_iterator, end_iterator, initial_value)
+    int sum_accumulate = std::accumulate(scores.begin(), scores.end(), 0);
+    std::cout << "Sum using std::accumulate: " << sum_accumulate << std::endl;
+
+    // --- Part 4: Summing a 2D Vector ---
+    std::cout << "\n--- Summing a 2D Vector ---" << std::endl;
+    
+    long long total_grid_sum = 0;
+    
+    // Using range-based for loops for cleaner syntax
+    for (const auto& row : grid) {      // Iterate through each row (which is a vector<int>)
+        for (int val : row) {           // Iterate through each value in the row
+            total_grid_sum += val;
+        }
+    }
+    std::cout << "Total sum of grid elements: " << total_grid_sum << std::endl;
 
     return 0;
 }
