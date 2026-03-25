@@ -4,6 +4,7 @@
 #include <random> // Required for modern C++ random number generation
 
 double omega = 0.01; // Learning rate
+std::vector<double> omegas = {0.01, 0.01}; // Learning rate for second prediction (if needed)
 double beta = 0.0; // Initial bias
 double eta = 0.01; // Learning rate for gradient descent
 int epochs = 1000; // Number of iterations for training
@@ -11,6 +12,9 @@ int epochs = 1000; // Number of iterations for training
 
 std::vector<DataPoint> dataset;
 std::vector<DataPoint> predictions;
+
+std::vector<DataPoints> dataset_multi;
+std::vector<DataPoints> predictions_multi;
 
 std::vector<DataPoint> load_data() {
     // Placeholder for loading data, replace with actual data loading logic
@@ -95,4 +99,76 @@ void run() {
     predictions = predict(dataset);
     double loss = compute_loss(predictions, dataset);
     std::cout << "Initial Loss: " << loss << std::endl;
+}
+
+std::vector<DataPoints> predict(const std::vector<DataPoints>& dataset) {
+    std::vector<DataPoints> preds;
+    for (const auto& point : dataset) {
+        double y1_pred = beta + omegas[0] * point.x; // Prediction for y1
+        double y2_pred = beta + omegas[1] * point.x; // Prediction for y2 (same as y1 in this simple model)
+        preds.push_back({point.x, y1_pred, y2_pred});
+    }
+    return preds;
+}
+
+double compute_loss(const std::vector<DataPoints>& predictions, const std::vector<DataPoints>& dataset) {
+    double total_loss = 0.0;
+    for (long i = 0; i < dataset.size(); ++i) {
+        double diff_y1 = predictions[i].y1 - dataset[i].y1;
+        double diff_y2 = predictions[i].y2 - dataset[i].y2;
+        total_loss += (diff_y1 * diff_y1 + diff_y2 * diff_y2) / 2.0; // Average loss for both predictions
+    }
+    return total_loss / dataset.size();
+}
+
+void update__multi_parameters() {
+    double omega_gradient_y1 = 0.0;
+    double omega_gradient_y2 = 0.0;
+    double beta_gradient = 0.0;
+
+    for (long i = 0; i < dataset_multi.size(); ++i) {
+        double diff_y1 = predictions_multi[i].y1 - dataset_multi[i].y1;
+        double diff_y2 = predictions_multi[i].y2 - dataset_multi[i].y2;
+
+        omega_gradient_y1 += diff_y1 * dataset_multi[i].x;
+        omega_gradient_y2 += diff_y2 * dataset_multi[i].x;
+        beta_gradient += diff_y1 + diff_y2; // Sum of gradients for both predictions
+    }
+
+    // Average the gradients over the dataset
+    omega_gradient_y1 /= dataset_multi.size();
+    omega_gradient_y2 /= dataset_multi.size();
+    beta_gradient /= (dataset_multi.size() * 2); // Average over both predictions
+
+    // Update parameters using the computed gradients
+    omegas[0] -= eta * omega_gradient_y1; // Update for y1
+    omegas[1] -= eta * omega_gradient_y2; // Update for y2
+    beta -= eta * beta_gradient;           // Update for bias
+}
+
+std::vector<DataPoints> generateMultiDataset(int num_points, double k1, double m1, double k2, double m2, double noise_level) {
+    std::vector<DataPoints> dataset;
+    
+    // 1. Initialize the Random Number Generator
+    std::random_device rd;  // Obtains a true random seed from your hardware
+    std::mt19937 gen(rd()); // The standard Mersenne Twister engine seeded by rd()
+    
+    // 2. Define our Distributions
+    std::uniform_real_distribution<double> x_dist(0.0, 10.0); 
+    std::normal_distribution<double> noise_dist(0.0, noise_level);
+
+    // 3. Generate the Data Points
+    for (int i = 0; i < num_points; ++i) {
+        double x_exact = x_dist(gen);
+        double y1_exact = k1 * x_exact + m1;
+        double y2_exact = k2 * x_exact + m2;
+        
+        double x_noisy = x_exact + noise_dist(gen);
+        double y1_noisy = y1_exact + noise_dist(gen);
+        double y2_noisy = y2_exact + noise_dist(gen);
+        
+        dataset.push_back({x_noisy, y1_noisy, y2_noisy});
+    }
+    
+    return dataset;
 }
