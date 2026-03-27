@@ -15,7 +15,7 @@
 
 // Compute slope (omega) and intercept (beta)
 // directly using the normal equation for simple linear regression.
-void computeNormalEquation(const std::vector<DataPoint>& dataset, double& omega, double& beta) {
+void NormalRegression::computeNormalEquation(const std::vector<DataPoint>& dataset) {
 
     if (dataset.empty()) {
         throw std::runtime_error("Dataset is empty.");
