@@ -43,6 +43,25 @@ void configureRunParametersFromConsole() {
     learningRate = readValueOrDefault<double>("learning rate", learningRate);
 }
 
+void test_normal_regression() {
+    std::cout << "Starting Normal Regression Test..." << std::endl;
+
+    NormalRegression model;
+
+    gradient_predictions.clear();
+    gradient_predictions = model.predict(gradient_dataset);
+    //const double initial_loss = model.compute_loss(gradient_predictions, gradient_dataset);
+
+    //std::cout << "Initial Loss: " << initial_loss << std::endl;
+    std::cout << "Learned Omega: " << model.get_omega() << std::endl;
+    std::cout << "Learned Beta: " << model.get_beta() << std::endl;
+    if (std::abs(model.get_omega() - trueOmega) < testTolerance && std::abs(model.get_beta() - trueBeta) < testTolerance) {
+        std::cout << "Test Passed: Parameters are close to true values." << std::endl;
+    } else {
+        std::cerr << "Test Failed: Parameters are not close to true values." << std::endl;
+    }
+}
+
 void test_gradient_regression() {
     std::cout << "Starting Gradient Regression Test..." << std::endl;
 
@@ -81,7 +100,7 @@ void test_gradient_regression() {
 void test_multi_regression() {
     std::cout << "Starting Multi-Regression Test..." << std::endl;
 
-    MultiGradientRegression model(learningRate, numEpochs, "data_multi.csv");
+    MultiGradientRegression model(learningRate, numEpochs, "dataMulti.csv");
 
     gradient_predictions_multi = model.predict(gradient_dataset_multi);
     const double initial_loss = model.compute_loss(gradient_predictions_multi, gradient_dataset_multi);

@@ -17,11 +17,9 @@ struct DataPoints {
 };
 
 class NormalRegression {
-private:
-    double omega; // slope
-    double beta;  // intercept
-
 public:
+    double omega; // slope
+    double beta;  // intercept  
     NormalRegression();
     void fit(const std::vector<DataPoint>& dataset);
     std::vector<DataPoint> predict(const std::vector<DataPoint>& dataset) const;
