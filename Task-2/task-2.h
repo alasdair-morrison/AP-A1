@@ -2,6 +2,7 @@
 #define TASK_2_H
 
 #include <vector>
+#include <stdexcept>
 
 struct DataPoint {
     double x;
@@ -16,6 +17,48 @@ struct DataPoints {
 
 extern std::vector<DataPoint> gradient_dataset;
 extern std::vector<DataPoint> gradient_predictions;
+
+extern std::vector<DataPoints> dataset_multi;
+extern std::vector<DataPoints> predictions_multi;
+
+// Function declarations
+std::vector<DataPoint> load_data();
+std::vector<DataPoint> predict(const std::vector<DataPoint>& dataset);
+double compute_loss(const std::vector<DataPoint>& predictions, const std::vector<DataPoint>& dataset);
+void update_parameters();
+std::vector<DataPoint> generateDataset(int num_points, double k, double m, double noise_level);
+std::vector<DataPoints> predict(const std::vector<DataPoints>& dataset);
+double compute_loss(const std::vector<DataPoints>& predictions, const std::vector<DataPoints>& dataset);
+void update__multi_parameters();
+std::vector<DataPoints> generateMultiDataset(int num_points, double k1, double m1, double k2, double m2, double noise_level);
+namespace sklearn_cpp {
+namespace linear_model {
+
+class LinearRegression {
+private:
+    double w;
+    double b;
+    double learning_rate;
+    int epochs;
+
+public:
+    LinearRegression(double lr = 0.0001, int n_epochs = 1000);
+
+    void fit(const std::vector<double>& X, const std::vector<double>& y);
+
+    std::vector<double> predict(const std::vector<double>& X) const;
+
+    double predict_single(double x) const;
+
+    double mean_squared_error(const std::vector<double>& X,
+                              const std::vector<double>& y) const;
+
+    double get_weight() const;
+    double get_bias() const;
+};
+
+} // namespace linear_model
+} // namespace sklearn_cpp
 
 extern std::vector<DataPoints> gradient_dataset_multi;
 extern std::vector<DataPoints> gradient_predictions_multi;
