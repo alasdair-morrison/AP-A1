@@ -1,146 +1,131 @@
 #include <iostream>
 #include <vector>
+#include <random>
 #include <iomanip>
+#include <fstream>
 #include <stdexcept>
 
-namespace sklearn_cpp {
-namespace linear_model {
+using namespace std;
 
-class LinearRegression {
-private:
-    double w;
-    double b;
-    double learning_rate;
-    int epochs;
+/*
+Assignment 01 - Task 2
+Simple Linear Regression using Normal Equation in C++
 
-public:
-    LinearRegression(double lr = 0.0001, int n_epochs = 1000)
-        : w(0.0), b(0.0), learning_rate(lr), epochs(n_epochs) {}
+This program generates a synthetic dataset based on the equation
+y = kx + m with small random noise added to the output.
 
-    void fit(const std::vector<double>& X, const std::vector<double>& y) {
-        if (X.empty() || y.empty()) {
-            throw std::invalid_argument("X and y must not be empty.");
-        }
+It then computes the parameters of the best-fit line:
+y = wx + b
 
-        if (X.size() != y.size()) {
-            throw std::invalid_argument("X and y must have the same size.");
-        }
+The parameters w and b are obtained using the analytical
+normal equation formula.
 
-        const int m = static_cast<int>(X.size());
+Compilation:
+g++ -std=c++11 main.cpp -o regression
 
-        for (int iter = 0; iter < epochs; ++iter) {
-            double dw = 0.0;
-            double db = 0.0;
+Run:
+./regression
+*/
 
-            for (int i = 0; i < m; ++i) {
-                double y_pred = w * X[i] + b;
-                double error = y_pred - y[i];
+// Generate synthetic data using a straight line with noise
+void generateData(vector<double>& X, vector<double>& y, int n, double true_w, double true_b) {
+    random_device rd;
+    mt19937 gen(rd());
 
-                dw += error * X[i];
-                db += error;
-            }
+    uniform_real_distribution<double> x_dist(0.0, 10.0);
+    normal_distribution<double> noise_dist(0.0, 1.0);
 
-            dw = (2.0 / m) * dw;
-            db = (2.0 / m) * db;
+    for (int i = 0; i < n; i++) {
+        double x = x_dist(gen);
+        double noise = noise_dist(gen);
+        double target = true_w * x + true_b + noise;
 
-            w -= learning_rate * dw;
-            b -= learning_rate * db;
-        }
+        X.push_back(x);
+        y.push_back(target);
+    }
+}
+
+// Save generated data into a CSV file for optional plotting
+void saveToCSV(const vector<double>& X, const vector<double>& y, const string& filename) {
+    ofstream file(filename);
+
+    if (!file.is_open()) {
+        throw runtime_error("Unable to open file.");
     }
 
-    std::vector<double> predict(const std::vector<double>& X) const {
-        if (X.empty()) {
-            throw std::invalid_argument("Input X must not be empty.");
-        }
-
-        std::vector<double> predictions;
-        predictions.reserve(X.size());
-
-        for (double x : X) {
-            predictions.push_back(w * x + b);
-        }
-
-        return predictions;
+    file << "x,y\n";
+    for (size_t i = 0; i < X.size(); i++) {
+        file << X[i] << "," << y[i] << "\n";
     }
 
-    double predict_single(double x) const {
-        return w * x + b;
+    file.close();
+}
+
+// Compute the mean of values in a vector
+double mean(const vector<double>& values) {
+    double sum = 0.0;
+    for (double value : values) {
+        sum += value;
+    }
+    return sum / values.size();
+}
+
+// Compute slope and intercept using the normal equation
+void normalEquation(const vector<double>& X, const vector<double>& y, double& w, double& b) {
+    if (X.empty() || y.empty() || X.size() != y.size()) {
+        throw invalid_argument("X and y must be non-empty and of equal size.");
     }
 
-    double mean_squared_error(const std::vector<double>& X,
-                              const std::vector<double>& y) const {
-        if (X.empty() || y.empty()) {
-            throw std::invalid_argument("X and y must not be empty.");
-        }
+    double x_mean = mean(X);
+    double y_mean = mean(y);
 
-        if (X.size() != y.size()) {
-            throw std::invalid_argument("X and y must have the same size.");
-        }
+    double numerator = 0.0;
+    double denominator = 0.0;
 
-        double mse = 0.0;
-        int m = static_cast<int>(X.size());
-
-        for (int i = 0; i < m; ++i) {
-            double error = predict_single(X[i]) - y[i];
-            mse += error * error;
-        }
-
-        return mse / m;
+    // Compute the numerator and denominator of the slope formula
+    for (size_t i = 0; i < X.size(); i++) {
+        numerator += (X[i] - x_mean) * (y[i] - y_mean);
+        denominator += (X[i] - x_mean) * (X[i] - x_mean);
     }
 
-    double get_weight() const { return w; }
-    double get_bias() const { return b; }
-};
-
-} // namespace linear_model
-} // namespace sklearn_cpp
+    w = numerator / denominator;
+    b = y_mean - w * x_mean;
+}
 
 int main() {
-    using sklearn_cpp::linear_model::LinearRegression;
-
     try {
-        // Example dataset: one input feature and one output
-        // Replace these with your actual assignment data
-        std::vector<double> X = {1, 2, 3, 4, 5, 6};
-        std::vector<double> y = {3, 5, 7, 9, 11, 13};
+        vector<double> X;
+        vector<double> y;
 
-        // Create model
-        LinearRegression model(0.01, 5000);
+        // True line used to generate the synthetic dataset
+        double true_w = 3.0;
+        double true_b = 5.0;
 
-        // Train model
-        model.fit(X, y);
+        // Generate noisy dataset
+        generateData(X, y, 100, true_w, true_b);
 
-        // Print learned parameters
-        std::cout << std::fixed << std::setprecision(4);
-        std::cout << "Learned weight (w): " << model.get_weight() << "\n";
-        std::cout << "Learned bias (b): " << model.get_bias() << "\n";
+        // Save dataset to CSV file
+        saveToCSV(X, y, "data.csv");
 
-        // Predict on training data
-        std::vector<double> predictions = model.predict(X);
+        double learned_w = 0.0;
+        double learned_b = 0.0;
 
-        std::cout << "\nPredictions on training data:\n";
-        std::cout << "X\tActual y\tPredicted y\n";
-        for (size_t i = 0; i < X.size(); ++i) {
-            std::cout << X[i] << "\t" << y[i] << "\t\t" << predictions[i] << "\n";
-        }
+        // Compute the best-fit line using the normal equation
+        normalEquation(X, y, learned_w, learned_b);
 
-        // Calculate error
-        double mse = model.mean_squared_error(X, y);
-        std::cout << "\nMean Squared Error: " << mse << "\n";
+        cout << fixed << setprecision(6);
+        cout << "===== Simple Linear Regression using Normal Equation =====\n\n";
 
-        // Predict new unseen values
-        std::vector<double> X_new = {7, 8, 10};
+        cout << "True parameters used to generate data:\n";
+        cout << "w = " << true_w << ", b = " << true_b << "\n\n";
 
-        std::vector<double> new_predictions = model.predict(X_new);
+        cout << "Learned parameters:\n";
+        cout << "w = " << learned_w << ", b = " << learned_b << "\n\n";
 
-        std::cout << "\nPredictions for new values:\n";
-        for (size_t i = 0; i < X_new.size(); ++i) {
-            std::cout << "x = " << X_new[i]
-                      << " -> y = " << new_predictions[i] << "\n";
-        }
+        cout << "Dataset has been saved to data.csv\n";
     }
-    catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << "\n";
+    catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
         return 1;
     }
 
