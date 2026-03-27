@@ -4,8 +4,6 @@
 #include <random>
 #include <fstream>
 
-
-
 void generateDataset(int num_points, double trueOmega, double trueBeta, double noise_level) {
     std::mt19937 gen(42); 
     

@@ -62,37 +62,6 @@ void update_parameters() {
     beta -= eta * beta_gradient;
 }
 
-std::vector<DataPoint> generateDataset(int num_points, double k, double m, double noise_level) {
-    std::vector<DataPoint> dataset;
-    
-    // 1. Initialize the Random Number Generator
-    std::random_device rd;  // Obtains a true random seed from your hardware
-    std::mt19937 gen(rd()); // The standard Mersenne Twister engine seeded by rd()
-    
-    // 2. Define our Distributions
-    // We want our base 'x' values to be spread out uniformly, say between 0.0 and 10.0
-    std::uniform_real_distribution<double> x_dist(0.0, 10.0); 
-    
-    // We want our noise to be Gaussian (Normal distribution) centered at 0
-    std::normal_distribution<double> noise_dist(0.0, noise_level);
-
-    // 3. Generate the Data Points
-    for (int i = 0; i < num_points; ++i) {
-        // Step 1: Generate base x and calculate exact y = k*x + m
-        double x_exact = x_dist(gen);
-        double y_exact = k * x_exact + m;
-        
-        // Step 2: Add noise to BOTH x and y (as explicitly requested in the assignment)
-        double x_noisy = x_exact + noise_dist(gen);
-        double y_noisy = y_exact + noise_dist(gen);
-        
-        // Store the noisy tuple in our dataset
-        dataset.push_back({x_noisy, y_noisy});
-    }
-    
-    return dataset;
-}
-
 void run() {
     // Generate 100 points for the line y = 3x + 4, with a noise standard deviation of 0.5
     dataset = generateDataset(100, 3.0, 4.0, 0.5);
@@ -144,31 +113,4 @@ void update__multi_parameters() {
     omegas[0] -= eta * omega_gradient_y1; // Update for y1
     omegas[1] -= eta * omega_gradient_y2; // Update for y2
     beta -= eta * beta_gradient;           // Update for bias
-}
-
-std::vector<DataPoints> generateMultiDataset(int num_points, double k1, double m1, double k2, double m2, double noise_level) {
-    std::vector<DataPoints> dataset;
-    
-    // 1. Initialize the Random Number Generator
-    std::random_device rd;  // Obtains a true random seed from your hardware
-    std::mt19937 gen(rd()); // The standard Mersenne Twister engine seeded by rd()
-    
-    // 2. Define our Distributions
-    std::uniform_real_distribution<double> x_dist(0.0, 10.0); 
-    std::normal_distribution<double> noise_dist(0.0, noise_level);
-
-    // 3. Generate the Data Points
-    for (int i = 0; i < num_points; ++i) {
-        double x_exact = x_dist(gen);
-        double y1_exact = k1 * x_exact + m1;
-        double y2_exact = k2 * x_exact + m2;
-        
-        double x_noisy = x_exact + noise_dist(gen);
-        double y1_noisy = y1_exact + noise_dist(gen);
-        double y2_noisy = y2_exact + noise_dist(gen);
-        
-        dataset.push_back({x_noisy, y1_noisy, y2_noisy});
-    }
-    
-    return dataset;
 }
