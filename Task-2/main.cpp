@@ -12,7 +12,7 @@ double trueBeta = 1.0;
 double noiseLevel = 0.5;
 double testTolerance = 0.5;
 double learningRate = 0.0001;
-int numEpochs = 5000;
+int numEpochs = 30000;
 
 template <typename T>
 T readValueOrDefault(const std::string& prompt, T defaultValue) {
@@ -43,7 +43,7 @@ void configureRunParametersFromConsole() {
     learningRate = readValueOrDefault<double>("learning rate", learningRate);
 }
 
-void test_normal_regression() {
+/*void test_normal_regression() {
     std::cout << "Starting Normal Regression Test..." << std::endl;
 
     NormalRegression model;
@@ -60,7 +60,7 @@ void test_normal_regression() {
     } else {
         std::cerr << "Test Failed: Parameters are not close to true values." << std::endl;
     }
-}
+}*/
 
 void test_gradient_regression() {
     std::cout << "Starting Gradient Regression Test..." << std::endl;
@@ -130,7 +130,9 @@ void test_multi_regression() {
 int main() {
     configureRunParametersFromConsole();
     generateDataset(numPoints, trueOmega, trueBeta, noiseLevel);
+    generateMultiDataset(numPoints, trueOmega, trueBeta, noiseLevel);
     test_gradient_regression();
+    test_multi_regression();
     return 0;
 }
 

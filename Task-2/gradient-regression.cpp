@@ -55,7 +55,7 @@ std::vector<DataPoints> loadDatasetMulti(const std::string& filename) {
 }
 
 GradientRegression::GradientRegression(double learning_rate, int num_epochs, std::string datasetFilename)
-    : omega(0.0), beta(0.0), eta(learning_rate), epochs(num_epochs), datasetFilename(datasetFilename) {
+    : eta(learning_rate), epochs(num_epochs), datasetFilename(datasetFilename), omega(0.0), beta(0.0) {
     gradient_dataset = loadDatasetSingle(datasetFilename);
 }
 
@@ -70,7 +70,7 @@ std::vector<DataPoint> GradientRegression::predict(const std::vector<DataPoint>&
 
 double GradientRegression::compute_loss(const std::vector<DataPoint>& predictions, const std::vector<DataPoint>& dataset) {
     double total_loss = 0.0;
-    for (long i = 0; i < dataset.size(); ++i) {
+    for (size_t i = 0; i < dataset.size(); ++i) {
         double diff = predictions[i].y - dataset[i].y;
         total_loss += diff * diff;
     }
@@ -79,7 +79,7 @@ double GradientRegression::compute_loss(const std::vector<DataPoint>& prediction
 
 double GradientRegression::compute_omega_gradient(const std::vector<DataPoint>& predictions, const std::vector<DataPoint>& dataset) {
     double gradient = 0.0;
-    for (long i = 0; i < dataset.size(); ++i) {
+    for (size_t i = 0; i < dataset.size(); ++i) {
         gradient += (predictions[i].y - dataset[i].y) * dataset[i].x;
     }
     return gradient / dataset.size();
@@ -87,7 +87,7 @@ double GradientRegression::compute_omega_gradient(const std::vector<DataPoint>& 
 
 double GradientRegression::compute_beta_gradient(const std::vector<DataPoint>& predictions, const std::vector<DataPoint>& dataset) {
     double gradient = 0.0;
-    for (long i = 0; i < dataset.size(); ++i) {
+    for (size_t i = 0; i < dataset.size(); ++i) {
         gradient += predictions[i].y - dataset[i].y;
     }
     return gradient / dataset.size();
@@ -102,28 +102,26 @@ void GradientRegression::update_parameters() {
 }
 
 MultiGradientRegression::MultiGradientRegression(double learning_rate, int num_epochs, std::string datasetFilename)
-    : omegas(2, 0.0), beta(0.0), eta(learning_rate), epochs(num_epochs), datasetFilename(datasetFilename)    {
+    : eta(learning_rate), epochs(num_epochs), datasetFilename(datasetFilename), omegas(2, 0.0), beta(0.0) {
     gradient_dataset_multi = loadDatasetMulti(datasetFilename);
 }
 
 std::vector<DataPoints> MultiGradientRegression::predict(const std::vector<DataPoints>& dataset) {
     std::vector<DataPoints> predictions;
     for (const auto& point : dataset) {
-        double x1_pred = beta + omegas[0] * point.x1;
-        double x2_pred = beta + omegas[1] * point.x2;
-        predictions.push_back({point.y, x1_pred, x2_pred});
+        double y_pred = beta + omegas[0] * point.x1 + omegas[1] * point.x2;
+        predictions.push_back({point.x1, point.x2, y_pred});
     }
     return predictions;
 }
 
 double MultiGradientRegression::compute_loss(const std::vector<DataPoints>& predictions, const std::vector<DataPoints>& dataset) {
     double total_loss = 0.0;
-    for (long i = 0; i < dataset.size(); ++i) {
-        double diff_x1 = predictions[i].x1 - dataset[i].x1;
-        double diff_x2 = predictions[i].x2 - dataset[i].x2;
-        total_loss += (diff_x1 * diff_x1 + diff_x2 * diff_x2) / 2.0;
+    for (size_t i = 0; i < dataset.size(); ++i) {
+        double diff = predictions[i].y - dataset[i].y;
+        total_loss += diff * diff;
     }
-    return total_loss / dataset.size();
+    return total_loss / (2.0 * dataset.size());
 }
 
 void MultiGradientRegression::update__multi_parameters() {
@@ -131,18 +129,17 @@ void MultiGradientRegression::update__multi_parameters() {
     double omega_gradient_x2 = 0.0;
     double beta_gradient = 0.0;
 
-    for (long i = 0; i < gradient_dataset_multi.size(); ++i) {
-        double diff_x1 = gradient_predictions_multi[i].x1 - gradient_dataset_multi[i].x1;
-        double diff_x2 = gradient_predictions_multi[i].x2 - gradient_dataset_multi[i].x2;
+    for (size_t i = 0; i < gradient_dataset_multi.size(); ++i) {
+        double diff = gradient_predictions_multi[i].y - gradient_dataset_multi[i].y;
 
-        omega_gradient_x1 += diff_x1 * gradient_dataset_multi[i].x1;
-        omega_gradient_x2 += diff_x2 * gradient_dataset_multi[i].x2;
-        beta_gradient += diff_x1 + diff_x2;
+        omega_gradient_x1 += diff * gradient_dataset_multi[i].x1;
+        omega_gradient_x2 += diff * gradient_dataset_multi[i].x2;
+        beta_gradient += diff;
     }
 
     omega_gradient_x1 /= gradient_dataset_multi.size();
     omega_gradient_x2 /= gradient_dataset_multi.size();
-    beta_gradient /= (gradient_dataset_multi.size() * 2);
+    beta_gradient /= gradient_dataset_multi.size();
 
     omegas[0] -= eta * omega_gradient_x1;
     omegas[1] -= eta * omega_gradient_x2;

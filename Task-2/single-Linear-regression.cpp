@@ -92,7 +92,7 @@ void normalEquation(const vector<double>& X, const vector<double>& y, double& w,
     b = y_mean - w * x_mean;
 }
 
-int main() {
+void stuff() {
     try {
         vector<double> X;
         vector<double> y;
@@ -126,8 +126,5 @@ int main() {
     }
     catch (const exception& e) {
         cerr << "Error: " << e.what() << endl;
-        return 1;
     }
-
-    return 0;
 }
