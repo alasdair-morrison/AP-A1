@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <stdexcept>
+#include <cstddef>
 
 struct DataPoint {
     double x;
@@ -13,6 +14,19 @@ struct DataPoints {
     double x1;
     double x2;
     double y;
+};
+
+class NormalRegression {
+private:
+    double omega; // slope
+    double beta;  // intercept
+
+public:
+    NormalRegression();
+    void fit(const std::vector<DataPoint>& dataset);
+    std::vector<DataPoint> predict(const std::vector<DataPoint>& dataset) const;
+    double get_omega() const;
+    double get_beta() const;
 };
 
 extern std::vector<DataPoint> gradient_dataset;
