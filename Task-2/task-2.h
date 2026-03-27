@@ -56,9 +56,10 @@ private:
     double beta;  // Intercept
     double eta;   // Learning rate
     int epochs;   // Number of iterations
+    std::string datasetFilename;
 
 public:
-    GradientRegression(double learning_rate, int num_epochs);
+    GradientRegression(double learning_rate, int num_epochs, std::string datasetFilename);
     std::vector<DataPoint> predict(const std::vector<DataPoint>& dataset);
     double compute_loss(const std::vector<DataPoint>& predictions, const std::vector<DataPoint>& dataset);
     double compute_omega_gradient(const std::vector<DataPoint>& predictions, const std::vector<DataPoint>& dataset);
@@ -72,9 +73,10 @@ private:
     double beta;                // Intercept
     double eta;                 // Learning rate
     int epochs;                 // Number of iterations
+    std::string datasetFilename;
 
 public:
-    MultiGradientRegression(int num_features, double learning_rate, int num_epochs);
+    MultiGradientRegression(double learning_rate, int num_epochs, std::string datasetFilename);
     std::vector<DataPoints> predict(const std::vector<DataPoints>& dataset);
     double compute_loss(const std::vector<DataPoints>& predictions, const std::vector<DataPoints>& dataset);
     void update__multi_parameters();

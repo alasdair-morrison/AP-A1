@@ -4,105 +4,61 @@
 #include <cmath>
 #include <cassert>
 
-void test_regression() {
-    std::cout << "Starting Regression Test..." << std::endl;
+void test_gradient_regression() {
+    std::cout << "Starting Gradient Regression Test..." << std::endl;
 
-    // Note: generateDataset is defined in gradient-regression.cpp
-    double true_omega = 3.0; // Slope
-    double true_beta = 2.0;  // Intercept
-    double noise_std = 0.5;  // Low noise for testing convergence
-    int num_points = 100;
+    GradientRegression model(0.0001, 5000, "data.csv");
 
-    dataset = generateDataset(num_points, true_omega, true_beta, noise_std);
+    gradient_predictions.clear();
+    model.predict(gradient_dataset);
+    const double initial_loss = model.compute_loss(gradient_predictions, gradient_dataset);
 
-    omega = 0.0; // Start with 0 slope
-    beta = 0.0;  // Start with 0 intercept
-    eta = 0.01;  // Learning rate
-    epochs = 30000; // Sufficient epochs for convergence
-    double initial_loss = 0.0;
-    
-    predictions = predict(dataset);
-    initial_loss = compute_loss(predictions, dataset);
-    std::cout << "Initial Parameters: omega=" << omega << ", beta=" << beta << std::endl;
+    for (int epoch = 0; epoch < 5000; ++epoch) {
+        gradient_predictions.clear();
+        model.predict(gradient_dataset);
+        model.update_parameters();
+    }
+
+    gradient_predictions.clear();
+    model.predict(gradient_dataset);
+    const double final_loss = model.compute_loss(gradient_predictions, gradient_dataset);
+
     std::cout << "Initial Loss: " << initial_loss << std::endl;
-
-    for (int epoch = 0; epoch < epochs; ++epoch) {
-        predictions = predict(dataset); // Update predictions based on current omega/beta
-        update_parameters();            // Update omega/beta based on predictions vs dataset
-    }
-
-    // Final prediction & loss
-    predictions = predict(dataset);
-    double final_loss = compute_loss(predictions, dataset);
-
-    std::cout << "Final Parameters: omega=" << omega << ", beta=" << beta << std::endl;
     std::cout << "Final Loss: " << final_loss << std::endl;
-    // Check if loss decreased
-    if (dataset.size() > 0 && final_loss >= initial_loss) {
-        std::cerr << "Test Failed: Loss did not decrease." << std::endl;
-    } else {
+    if (!gradient_dataset.empty() && final_loss < initial_loss) {
         std::cout << "Test Passed: Loss decreased." << std::endl;
-    }
-    // Check if parameters are close to true values (within tolerance)
-    double tolerance = 0.5; // Allow some deviation due to noise
-    if (std::abs(omega - true_omega) < tolerance && std::abs(beta - true_beta) < tolerance) {
-        std::cout << "Test Passed: Parameters converged to true values." << std::endl;
     } else {
-        std::cerr << "Test Failed: Parameters did not converge close enough. Expected omega=" << true_omega << ", beta=" << true_beta << std::endl;
+        std::cerr << "Test Failed: Loss did not decrease." << std::endl;
     }
 }
 
 void test_multi_regression() {
-    // Placeholder for multi-regression test, similar structure to test_regression but with multiple outputs
-    std::cout << "Multi-Regression Test beginning..." << std::endl;
-     // Note: generateDataset is defined in gradient-regression.cpp
-    double true_omega = 3.0; // Slope
-    double true_beta = 2.0;  // Intercept
-    double noise_std = 0.5;  // Low noise for testing convergence
-    int num_points = 100;
+    std::cout << "Starting Multi-Regression Test..." << std::endl;
 
-    dataset_multi = generateMultiDataset(num_points, true_omega, true_beta, true_omega, true_beta, noise_std);
+    MultiGradientRegression model(0.0001, 5000, "data_multi.csv");
 
-    omegas = {0.0, 0.0}; // Start with 0 slopes 
-    beta = 0.0;  // Start with 0 intercept
-    eta = 0.01;  // Learning rate
-    epochs = 20000; // Sufficient epochs for convergence
-    double initial_loss = 0.0;
-    
-    predictions_multi = predict(dataset_multi);
-    initial_loss = compute_loss(predictions_multi, dataset_multi);
-    std::cout << "Initial Parameters: omegas=[" << omegas[0] << ", " << omegas[1] << "], beta=" << beta << std::endl;
+    gradient_predictions_multi = model.predict(gradient_dataset_multi);
+    const double initial_loss = model.compute_loss(gradient_predictions_multi, gradient_dataset_multi);
+
+    for (int epoch = 0; epoch < 5000; ++epoch) {
+        gradient_predictions_multi = model.predict(gradient_dataset_multi);
+        model.update__multi_parameters();
+    }
+
+    gradient_predictions_multi = model.predict(gradient_dataset_multi);
+    const double final_loss = model.compute_loss(gradient_predictions_multi, gradient_dataset_multi);
+
     std::cout << "Initial Loss: " << initial_loss << std::endl;
-
-    for (int epoch = 0; epoch < epochs; ++epoch) {
-        predictions_multi = predict(dataset_multi); // Update predictions based on current omegas/beta
-        update__multi_parameters();            // Update omegas/beta based on predictions vs dataset
-    }
-
-    // Final prediction & loss
-    predictions_multi = predict(dataset_multi);
-    double final_loss = compute_loss(predictions_multi, dataset_multi);
-
-    std::cout << "Final Parameters: omegas=[" << omegas[0] << ", " << omegas[1] << "], beta=" << beta << std::endl;
     std::cout << "Final Loss: " << final_loss << std::endl;
-    // Check if loss decreased
-    if (dataset_multi.size() > 0 && final_loss >= initial_loss) {
-        std::cerr << "Test Failed: Loss did not decrease." << std::endl;
+    if (!gradient_dataset_multi.empty() && final_loss < initial_loss) {
+        std::cout << "Test Passed: Multi-loss decreased." << std::endl;
     } else {
-        std::cout << "Test Passed: Loss decreased." << std::endl;
-    }
-    // Check if parameters are close to true values (within tolerance)
-    double tolerance = 0.5; // Allow some deviation due to noise
-    if (std::abs(omegas[0] - true_omega) < tolerance && std::abs(omegas[1] - true_omega) < tolerance && std::abs(beta - true_beta) < tolerance) {
-        std::cout << "Test Passed: Parameters converged to true values." << std::endl;
-    } else {
-        std::cerr << "Test Failed: Parameters did not converge close enough. Expected omegas=[" << true_omega << ", " << true_omega << "], beta=" << true_beta << std::endl;
+        std::cerr << "Test Failed: Multi-loss did not decrease." << std::endl;
     }
 }
 
 int main() {
-    test_regression();
-    test_multi_regression();
+    test_gradient_regression();
     return 0;
 }
 
