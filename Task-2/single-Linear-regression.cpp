@@ -10,32 +10,6 @@
 // Load dataset 
 
 
-std::vector<DataPoint> loadDatasetSingle(const std::string& filename) {
-    std::vector<DataPoint> dataset;
-    std::ifstream inFile(filename);
-
-    if (!inFile) {
-        throw std::runtime_error("Could not open file: " + filename);
-    }
-
-    std::string line;
-    std::getline(inFile, line); // Skip header
-
-    while (std::getline(inFile, line)) {
-        std::istringstream iss(line);
-        std::string x_str, y_str;
-
-        if (std::getline(iss, x_str, ',') && std::getline(iss, y_str)) {
-            double x = std::stod(x_str);
-            double y = std::stod(y_str);
-            dataset.push_back({x, y});
-        }
-    }
-
-    inFile.close();
-    return dataset;
-}
-
 
 // NORMAL EQUATION IMPLEMENTATION
 
