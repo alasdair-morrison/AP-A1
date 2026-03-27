@@ -19,6 +19,7 @@ void printBoard(char board[3][3]){
 //        "     I     I     \n"
 //        "     I     I     \n";
 
+std::cout<<"\n";
 for(int i = 0; i<3; i++){
     for(int j = 0; j<3; j++){
         std::cout<<board[i][j];
@@ -29,7 +30,7 @@ for(int i = 0; i<3; i++){
 
 
 
-void playerMove(char b[3][3]) {
+void playerMove(char b[3][3], char p) {
     int move{0};
 
     while (true) {
@@ -50,7 +51,7 @@ void playerMove(char b[3][3]) {
             std::cout << "Invalid move, try again.\n";
         }
         else {
-            b[row][col] = 'x';
+            b[row][col] = p;
             return;
         }
     }
@@ -74,13 +75,15 @@ bool checkPlayAgain(){
     } 
 }
 
-bool checkWinCons(int a[8]){
+bool checkWinCons(char a[3][3]){
     for(int i=0; i<3; i++){
-        if(a[i]==a[i+3] && a[i]==a[i+6]){return true;}
-        if(a[i*3]==a[i*3+1] && a[i*3]==a[i*3+2]){return true;}
+        //checking straights for winners
+        if(a[i][0]==a[i][1] && a[i][0]==a[i][2]){return true;}
+        if(a[0][i]==a[1][i] && a[0][i]==a[2][i]){return true;}
     }
-    if(a[0]==a[4] && a[0]==a[8]){return true;}
-    if(a[2]==a[4] && a[2]==a[6]){return true;}
+    //check diagonals for winners
+    if(a[0][0]==a[1][1] && a[0][0]==a[2][2]){return true;}
+    if(a[0][2]==a[1][1] && a[0][2]==a[2][0]){return true;}
     return false;
 }
 
@@ -89,12 +92,22 @@ int main(){
     //printBoard();
 
     while(play==true){
-        for(int i=0; i<10; i++){
-            playerMove(board);
-            printBoard(board);
-            if 
+        int i = 0;
+        bool winnercheck = false;
+        char playerturn='x';
+            while(i<9 && winnercheck == false){
+                if(i%2==0){playerturn='x';}
+                else{playerturn='o';}
+                playerMove(board,playerturn);
+                printBoard(board);
+                bool winnercheck = checkWinCons(board);
+                i++;
+        }
+        if (winnercheck == true){
+            std::cout<< "somebody has won\n";
         }
         play = checkPlayAgain();
+        for(int i=0;i<9;i++){playerMove(board,'.');}
     }
     std::cout <<"Thank you for playing!!";
 }
