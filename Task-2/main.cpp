@@ -9,6 +9,7 @@
 int numPoints = 100;
 double trueOmega = 2.0;
 double trueBeta = 1.0;
+double trueBeta2 = 0.5;
 double noiseLevel = 0.5;
 double testTolerance = 0.5;
 double learningRate = 0.0001;
@@ -38,6 +39,15 @@ void configureRunParametersFromConsole() {
     std::cout << "Configure run parameters (press Enter to keep defaults)" << std::endl;
     trueOmega = readValueOrDefault<double>("trueOmega", trueOmega);
     trueBeta = readValueOrDefault<double>("trueBeta", trueBeta);
+    noiseLevel = readValueOrDefault<double>("noiseLevel", noiseLevel);
+    numEpochs = readValueOrDefault<int>("number of epochs", numEpochs);
+    learningRate = readValueOrDefault<double>("learning rate", learningRate);
+}
+void configureRunParametersFromConsoleMulti() {
+    std::cout << "Configure run parameters (press Enter to keep defaults)" << std::endl;
+    trueOmega = readValueOrDefault<double>("trueOmega", trueOmega);
+    trueBeta = readValueOrDefault<double>("trueBeta", trueBeta);
+    trueBeta2 = readValueOrDefault<double>("trueBeta2", trueBeta2);
     noiseLevel = readValueOrDefault<double>("noiseLevel", noiseLevel);
     numEpochs = readValueOrDefault<int>("number of epochs", numEpochs);
     learningRate = readValueOrDefault<double>("learning rate", learningRate);
@@ -137,6 +147,7 @@ int main() {
     generateDataset(numPoints, trueOmega, trueBeta, noiseLevel);
     generateMultiDataset(numPoints, trueOmega, trueBeta, noiseLevel);
     test_gradient_regression();
+    configureRunParametersFromConsoleMulti();
     test_multi_regression();
     return 0;
 }
