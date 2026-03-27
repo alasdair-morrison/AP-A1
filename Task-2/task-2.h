@@ -33,7 +33,7 @@ public:
     double get_beta() const;
 };
 
-extern std::vector<DataPoint> gradient_dataset;
+extern std::vector<DataPoint> dataset;
 extern std::vector<DataPoint> gradient_predictions;
 
 
@@ -54,7 +54,7 @@ public:
     double omega; // Slope
     double beta;  // Intercept
     GradientRegression(double learning_rate, int num_epochs, std::string datasetFilename);
-    std::vector<DataPoint> predict(const std::vector<DataPoint>& dataset);
+    void predict(const std::vector<DataPoint>& dataset);
     double compute_loss(const std::vector<DataPoint>& predictions, const std::vector<DataPoint>& dataset);
     double compute_omega_gradient(const std::vector<DataPoint>& predictions, const std::vector<DataPoint>& dataset);
     double compute_beta_gradient(const std::vector<DataPoint>& predictions, const std::vector<DataPoint>& dataset);
@@ -71,7 +71,7 @@ public:
     std::vector<double> omegas; // Slopes for each feature
     double beta;                // Intercept
     MultiGradientRegression(double learning_rate, int num_epochs, std::string datasetFilename);
-    std::vector<DataPoints> predict(const std::vector<DataPoints>& dataset);
+    void predict(const std::vector<DataPoints>& dataset);
     double compute_loss(const std::vector<DataPoints>& predictions, const std::vector<DataPoints>& dataset);
     void update__multi_parameters();
 };

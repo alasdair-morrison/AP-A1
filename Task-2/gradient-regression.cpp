@@ -59,13 +59,11 @@ GradientRegression::GradientRegression(double learning_rate, int num_epochs, std
     gradient_dataset = loadDatasetSingle(datasetFilename);
 }
 
-std::vector<DataPoint> GradientRegression::predict(const std::vector<DataPoint>& dataset) {
-    std::vector<DataPoint> predictions;
+void GradientRegression::predict(const std::vector<DataPoint>& dataset) {
     for (const auto& point : dataset) {
         double y_pred = beta + omega * point.x;
         gradient_predictions.push_back({point.x, y_pred});
     }
-    return predictions;
 }
 
 double GradientRegression::compute_loss(const std::vector<DataPoint>& predictions, const std::vector<DataPoint>& dataset) {
@@ -106,13 +104,11 @@ MultiGradientRegression::MultiGradientRegression(double learning_rate, int num_e
     gradient_dataset_multi = loadDatasetMulti(datasetFilename);
 }
 
-std::vector<DataPoints> MultiGradientRegression::predict(const std::vector<DataPoints>& dataset) {
-    std::vector<DataPoints> predictions;
+void MultiGradientRegression::predict(const std::vector<DataPoints>& dataset) {
     for (const auto& point : dataset) {
         double y_pred = beta + omegas[0] * point.x1 + omegas[1] * point.x2;
-        predictions.push_back({point.x1, point.x2, y_pred});
+        gradient_predictions_multi.push_back({point.x1, point.x2, y_pred});
     }
-    return predictions;
 }
 
 double MultiGradientRegression::compute_loss(const std::vector<DataPoints>& predictions, const std::vector<DataPoints>& dataset) {
