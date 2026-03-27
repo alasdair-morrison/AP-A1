@@ -16,21 +16,8 @@ struct DataPoints {
 };
 
 extern std::vector<DataPoint> gradient_dataset;
-extern std::vector<DataPoint> gradient_predictions;
+extern std::vector<DataPoint> gradient_predictions;s
 
-extern std::vector<DataPoints> dataset_multi;
-extern std::vector<DataPoints> predictions_multi;
-
-// Function declarations
-std::vector<DataPoint> load_data();
-std::vector<DataPoint> predict(const std::vector<DataPoint>& dataset);
-double compute_loss(const std::vector<DataPoint>& predictions, const std::vector<DataPoint>& dataset);
-void update_parameters();
-std::vector<DataPoint> generateDataset(int num_points, double k, double m, double noise_level);
-std::vector<DataPoints> predict(const std::vector<DataPoints>& dataset);
-double compute_loss(const std::vector<DataPoints>& predictions, const std::vector<DataPoints>& dataset);
-void update__multi_parameters();
-std::vector<DataPoints> generateMultiDataset(int num_points, double k1, double m1, double k2, double m2, double noise_level);
 namespace sklearn_cpp {
 namespace linear_model {
 
