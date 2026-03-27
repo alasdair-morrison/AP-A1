@@ -3,12 +3,18 @@
 
 #include <vector>
 #include <stdexcept>
-#include <cstddef>
+#include <string>
+
 
 struct DataPoint {
     double x;
     double y;
 };
+std::vector<DataPoint> loadDatasetSingle(const std::string& filename);
+
+void computeNormalEquation(const std::vector<DataPoint>& dataset, double& omega, double& beta);
+
+std::vector<DataPoint> predictNormalEquation(const std::vector<DataPoint>& dataset, double omega, double beta);
 
 struct DataPoints {
     double x1;
