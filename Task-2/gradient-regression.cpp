@@ -1,7 +1,7 @@
 #include "task-2.h"
 #include <vector>
 #include <iostream>
-
+class GradientRegression {
 double omega = 0.01; // Learning rate
 std::vector<double> omegas = {0.01, 0.01}; // Learning rate for second prediction (if needed)
 double beta = 0.0; // Initial bias
