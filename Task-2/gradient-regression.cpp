@@ -1,7 +1,6 @@
 #include "task-2.h"
 #include <vector>
 #include <iostream>
-#include <random> // Required for modern C++ random number generation
 
 double omega = 0.01; // Learning rate
 std::vector<double> omegas = {0.01, 0.01}; // Learning rate for second prediction (if needed)
@@ -73,9 +72,9 @@ void run() {
 std::vector<DataPoints> predict(const std::vector<DataPoints>& dataset) {
     std::vector<DataPoints> preds;
     for (const auto& point : dataset) {
-        double y1_pred = beta + omegas[0] * point.x; // Prediction for y1
-        double y2_pred = beta + omegas[1] * point.x; // Prediction for y2 (same as y1 in this simple model)
-        preds.push_back({point.x, y1_pred, y2_pred});
+        double x1_pred = beta + omegas[0] * point.x1; // Prediction for x1
+        double x2_pred = beta + omegas[1] * point.x2; // Prediction for x2 (same as x1 in this simple model)
+        preds.push_back({point.y, x1_pred, x2_pred});
     }
     return preds;
 }
@@ -83,34 +82,34 @@ std::vector<DataPoints> predict(const std::vector<DataPoints>& dataset) {
 double compute_loss(const std::vector<DataPoints>& predictions, const std::vector<DataPoints>& dataset) {
     double total_loss = 0.0;
     for (long i = 0; i < dataset.size(); ++i) {
-        double diff_y1 = predictions[i].y1 - dataset[i].y1;
-        double diff_y2 = predictions[i].y2 - dataset[i].y2;
+        double diff_y1 = predictions[i].x1 - dataset[i].x1;
+        double diff_y2 = predictions[i].x2 - dataset[i].x2;
         total_loss += (diff_y1 * diff_y1 + diff_y2 * diff_y2) / 2.0; // Average loss for both predictions
     }
     return total_loss / dataset.size();
 }
 
 void update__multi_parameters() {
-    double omega_gradient_y1 = 0.0;
-    double omega_gradient_y2 = 0.0;
+    double omega_gradient_x1 = 0.0;
+    double omega_gradient_x2 = 0.0;
     double beta_gradient = 0.0;
 
     for (long i = 0; i < dataset_multi.size(); ++i) {
-        double diff_y1 = predictions_multi[i].y1 - dataset_multi[i].y1;
-        double diff_y2 = predictions_multi[i].y2 - dataset_multi[i].y2;
+        double diff_x1 = predictions_multi[i].x1 - dataset_multi[i].x1;
+        double diff_x2 = predictions_multi[i].x2 - dataset_multi[i].x2;
 
-        omega_gradient_y1 += diff_y1 * dataset_multi[i].x;
-        omega_gradient_y2 += diff_y2 * dataset_multi[i].x;
-        beta_gradient += diff_y1 + diff_y2; // Sum of gradients for both predictions
+        omega_gradient_x1 += diff_x1 * dataset_multi[i].x1;
+        omega_gradient_x2 += diff_x2 * dataset_multi[i].x2;
+        beta_gradient += diff_x1 + diff_x2; // Sum of gradients for both predictions
     }
 
     // Average the gradients over the dataset
-    omega_gradient_y1 /= dataset_multi.size();
-    omega_gradient_y2 /= dataset_multi.size();
+    omega_gradient_x1 /= dataset_multi.size();
+    omega_gradient_x2 /= dataset_multi.size();
     beta_gradient /= (dataset_multi.size() * 2); // Average over both predictions
 
     // Update parameters using the computed gradients
-    omegas[0] -= eta * omega_gradient_y1; // Update for y1
-    omegas[1] -= eta * omega_gradient_y2; // Update for y2
+    omegas[0] -= eta * omega_gradient_x1; // Update for x1
+    omegas[1] -= eta * omega_gradient_x2; // Update for x2
     beta -= eta * beta_gradient;           // Update for bias
 }
