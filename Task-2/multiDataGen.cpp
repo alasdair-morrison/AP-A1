@@ -17,7 +17,8 @@ void generateDataset(int num_points, double trueOmega, double trueBeta, double n
         double x1_val = 2.0 * uniform(gen);
         X1.push_back(x1_val);
 
-        double x2_val = 2.0 * uniform(gen);  //Second X-point gen
+        double x2_val = 4.0 * uniform(gen);  //Second X-point gen
+        //may need to alter to make different from first xval
         X2.push_back(x2_val);
 
 
