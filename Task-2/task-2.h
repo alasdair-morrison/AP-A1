@@ -12,9 +12,11 @@ struct DataPoint {
 };
 std::vector<DataPoint> loadDatasetSingle(const std::string& filename);
 
-void computeNormalEquation(const std::vector<DataPoint>& dataset, double& omega, double& beta);
+void computeNormalEquation(const std::vector<DataPoint>& dataset);
 
-std::vector<DataPoint> predictNormalEquation(const std::vector<DataPoint>& dataset, double omega, double beta);
+std::vector<DataPoint> predictNormalEquation(const std::vector<DataPoint>& dataset);
+
+double compute_loss(const std::vector<DataPoint>& predictions, const std::vector<DataPoint>& dataset);
 
 struct DataPoints {
     double x1;
