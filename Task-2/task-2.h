@@ -16,7 +16,7 @@ struct DataPoints {
 };
 
 extern std::vector<DataPoint> gradient_dataset;
-extern std::vector<DataPoint> gradient_predictions;s
+extern std::vector<DataPoint> gradient_predictions;
 
 namespace sklearn_cpp {
 namespace linear_model {
