@@ -102,15 +102,18 @@ void test_multi_regression() {
 
     MultiGradientRegression model(learningRate, numEpochs, "dataMulti.csv");
 
-    gradient_predictions_multi = model.predict(gradient_dataset_multi);
+    gradient_predictions_multi.clear();
+    model.predict(gradient_dataset_multi);
     const double initial_loss = model.compute_loss(gradient_predictions_multi, gradient_dataset_multi);
 
     for (int epoch = 0; epoch < numEpochs; ++epoch) {
-        gradient_predictions_multi = model.predict(gradient_dataset_multi);
+        gradient_predictions_multi.clear();
+        model.predict(gradient_dataset_multi);
         model.update__multi_parameters();
     }
 
-    gradient_predictions_multi = model.predict(gradient_dataset_multi);
+    gradient_predictions_multi.clear();
+    model.predict(gradient_dataset_multi);
     const double final_loss = model.compute_loss(gradient_predictions_multi, gradient_dataset_multi);
 
     std::cout << "Initial Loss: " << initial_loss << std::endl;
@@ -120,10 +123,12 @@ void test_multi_regression() {
     } else {
         std::cerr << "Test Failed: Multi-loss did not decrease." << std::endl;
     }
-    if (model.omegas[0] > 0 && model.omegas[1] > 0 && model.beta > 0) {
-        std::cout << "Test Passed: Multi-parameters are positive." << std::endl;
+    std::cout << "Learned Omegas: " << model.omegas[0] << ", " << model.omegas[1] << std::endl;
+    std::cout << "Learned Beta: " << model.beta << std::endl;
+    if (std::abs(model.omegas[0] - trueOmega) < testTolerance && std::abs(model.omegas[1] - trueOmega) < testTolerance && std::abs(model.beta - trueBeta) < testTolerance) {
+        std::cout << "Test Passed: Multi-parameters are close to true values." << std::endl;
     } else {
-        std::cerr << "Test Failed: Multi-parameters are not positive." << std::endl;
+        std::cerr << "Test Failed: Multi-parameters are not close to true values." << std::endl;
     }
 }
 

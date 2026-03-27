@@ -6,42 +6,17 @@
 #include <sstream>
 #include <stdexcept>
 
-
-// Load dataset 
-
-
-std::vector<DataPoint> loadDatasetSingle(const std::string& filename) {
-    std::vector<DataPoint> dataset;
-    std::ifstream inFile(filename);
-
-    if (!inFile) {
-        throw std::runtime_error("Could not open file: " + filename);
-    }
-
-    std::string line;
-    std::getline(inFile, line); // Skip header
-
-    while (std::getline(inFile, line)) {
-        std::istringstream iss(line);
-        std::string x_str, y_str;
-
-        if (std::getline(iss, x_str, ',') && std::getline(iss, y_str)) {
-            double x = std::stod(x_str);
-            double y = std::stod(y_str);
-            dataset.push_back({x, y});
-        }
-    }
-
-    inFile.close();
-    return dataset;
-}
-
+// Load dataset
+std::vector<DataPoint> normal_dataset;
+std::vector<DataPoint> normal_predictions;
+double omega; // Slope
+double beta;  // Intercept
 
 // NORMAL EQUATION IMPLEMENTATION
 
 // Compute slope (omega) and intercept (beta)
 // directly using the normal equation for simple linear regression.
-void computeNormalEquation(const std::vector<DataPoint>& dataset, double& omega, double& beta) {
+void computeNormalEquation(const std::vector<DataPoint>& dataset) {
 
     if (dataset.empty()) {
         throw std::runtime_error("Dataset is empty.");
@@ -73,13 +48,10 @@ void computeNormalEquation(const std::vector<DataPoint>& dataset, double& omega,
     beta = (sum_y - omega * sum_x) / m;
 }
 
-
-
 // Prediction Function
 
-
 // Use computed omega and beta to predict y values
-std::vector<DataPoint> predictNormalEquation(const std::vector<DataPoint>& dataset, double omega, double beta) {
+std::vector<DataPoint> predictNormalEquation(const std::vector<DataPoint>& dataset) {
 
     std::vector<DataPoint> predictions;
 
@@ -89,4 +61,23 @@ std::vector<DataPoint> predictNormalEquation(const std::vector<DataPoint>& datas
     }
 
     return predictions;
+}
+
+// Loss Function
+
+// Compute mean squared error loss between predictions and actual dataset
+double compute_loss(const std::vector<DataPoint>& predictions, const std::vector<DataPoint>& dataset) {
+
+    if (predictions.size() != dataset.size()) {
+        throw std::runtime_error("Predictions and dataset sizes do not match.");
+    }
+
+    double total_loss = 0.0;
+
+    for (size_t i = 0; i < dataset.size(); ++i) {
+        double diff = predictions[i].y - dataset[i].y;
+        total_loss += diff * diff;
+    }
+
+    return total_loss / (dataset.size() * 2);
 }

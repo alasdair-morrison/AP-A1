@@ -59,13 +59,11 @@ GradientRegression::GradientRegression(double learning_rate, int num_epochs, std
     gradient_dataset = loadDatasetSingle(datasetFilename);
 }
 
-std::vector<DataPoint> GradientRegression::predict(const std::vector<DataPoint>& dataset) {
-    std::vector<DataPoint> predictions;
+void GradientRegression::predict(const std::vector<DataPoint>& dataset) {
     for (const auto& point : dataset) {
         double y_pred = beta + omega * point.x;
         gradient_predictions.push_back({point.x, y_pred});
     }
-    return predictions;
 }
 
 double GradientRegression::compute_loss(const std::vector<DataPoint>& predictions, const std::vector<DataPoint>& dataset) {
@@ -106,13 +104,11 @@ MultiGradientRegression::MultiGradientRegression(double learning_rate, int num_e
     gradient_dataset_multi = loadDatasetMulti(datasetFilename);
 }
 
-std::vector<DataPoints> MultiGradientRegression::predict(const std::vector<DataPoints>& dataset) {
-    std::vector<DataPoints> predictions;
+void MultiGradientRegression::predict(const std::vector<DataPoints>& dataset) {
     for (const auto& point : dataset) {
         double y_pred = beta + omegas[0] * point.x1 + omegas[1] * point.x2;
-        predictions.push_back({point.x1, point.x2, y_pred});
+        gradient_predictions_multi.push_back({point.x1, point.x2, y_pred});
     }
-    return predictions;
 }
 
 double MultiGradientRegression::compute_loss(const std::vector<DataPoints>& predictions, const std::vector<DataPoints>& dataset) {
@@ -130,18 +126,19 @@ void MultiGradientRegression::update__multi_parameters() {
     double beta_gradient = 0.0;
 
     for (size_t i = 0; i < gradient_dataset_multi.size(); ++i) {
-        double diff = gradient_predictions_multi[i].y - gradient_dataset_multi[i].y;
-
+        const double diff = gradient_predictions_multi[i].y - gradient_dataset_multi[i].y;
         omega_gradient_x1 += diff * gradient_dataset_multi[i].x1;
         omega_gradient_x2 += diff * gradient_dataset_multi[i].x2;
         beta_gradient += diff;
     }
 
+    // Average the gradients over the dataset
     omega_gradient_x1 /= gradient_dataset_multi.size();
     omega_gradient_x2 /= gradient_dataset_multi.size();
     beta_gradient /= gradient_dataset_multi.size();
 
-    omegas[0] -= eta * omega_gradient_x1;
-    omegas[1] -= eta * omega_gradient_x2;
-    beta -= eta * beta_gradient;
+    // Update parameters using the computed gradients
+    omegas[0] -= eta * omega_gradient_x1; // Update for x1
+    omegas[1] -= eta * omega_gradient_x2; // Update for x2
+    beta -= eta * beta_gradient;           // Update for bias
 }
