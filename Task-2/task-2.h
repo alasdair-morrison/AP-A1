@@ -35,7 +35,7 @@ extern std::vector<DataPoint> gradient_predictions;
 extern std::vector<DataPoints> gradient_dataset_multi;
 extern std::vector<DataPoints> gradient_predictions_multi;
 void generateDataset(int num_points, double trueOmega, double trueBeta, double noise_level);
-void generateMultiDataset(int num_points, double trueOmega, double trueBeta, double noise_level);
+void generateMultiDataset(int num_points, double trueOmega1, double trueOmega2, double trueBeta, double noise_level);
 std::vector<DataPoint> loadDatasetSingle(const std::string& filename);
 std::vector<DataPoints> loadDatasetMulti(const std::string& filename);
 class GradientRegression {
