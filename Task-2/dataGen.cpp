@@ -18,7 +18,7 @@ void generateDataset(int num_points, double trueOmega, double trueBeta, double n
         X.push_back(x_val);
 
         double noise = 0.25 * normal(gen);
-        double y_val = trueOmega + trueBeta * x_val + noise;
+        double y_val = trueBeta + trueOmega * x_val + noise;
         y.push_back(y_val);
     }
 
