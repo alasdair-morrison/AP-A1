@@ -75,15 +75,15 @@ bool checkPlayAgain(){
     } 
 }
 
-bool checkWinCons(char a[3][3]){
+bool checkWinCons(char a[3][3], char p){
     for(int i=0; i<3; i++){
         //checking straights for winners
-        if(a[i][0]==a[i][1] && a[i][0]==a[i][2]){return true;}
-        if(a[0][i]==a[1][i] && a[0][i]==a[2][i]){return true;}
+        if(a[i][0]==p && a[i][1]==p && a[i][2]==p){return true;}
+        if(a[0][i]==p && a[1][i]==p && a[2][i]==p){return true;}
     }
     //check diagonals for winners
-    if(a[0][0]==a[1][1] && a[0][0]==a[2][2]){return true;}
-    if(a[0][2]==a[1][1] && a[0][2]==a[2][0]){return true;}
+    if(a[0][0]==p && a[1][1]==p && a[2][2]==p){return true;}
+    if(a[0][2]==p && a[1][1]==p && a[2][0]==p){return true;}
     return false;
 }
 
@@ -100,12 +100,14 @@ int main(){
                 else{playerturn='o';}
                 playerMove(board,playerturn);
                 printBoard(board);
-                bool winnercheck = checkWinCons(board);
+                winnercheck = checkWinCons(board,playerturn);
+                std::cout << winnercheck,"winnercheck\n";
                 i++;
         }
         if (winnercheck == true){
-            std::cout<< "somebody has won\n";
+            std::cout<< playerturn," has won!\n";
         }
+        else{std::cout<<"The match was a draw!\n";}
         play = checkPlayAgain();
         for(int i=0;i<9;i++){playerMove(board,'.');}
     }
