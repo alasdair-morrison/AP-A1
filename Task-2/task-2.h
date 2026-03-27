@@ -22,16 +22,6 @@ struct DataPoints {
     double y;
 };
 
-class NormalRegression {
-public:
-    double omega; // slope
-    double beta;  // intercept  
-    NormalRegression();
-    void fit(const std::vector<DataPoint>& dataset);
-    std::vector<DataPoint> predict(const std::vector<DataPoint>& dataset) const;
-    double get_omega() const;
-    double get_beta() const;
-};
 
 extern std::vector<DataPoint> gradient_dataset;
 extern std::vector<DataPoint> gradient_predictions;
