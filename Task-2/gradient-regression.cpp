@@ -126,18 +126,19 @@ void MultiGradientRegression::update__multi_parameters() {
     double beta_gradient = 0.0;
 
     for (size_t i = 0; i < gradient_dataset_multi.size(); ++i) {
-        double diff = gradient_predictions_multi[i].y - gradient_dataset_multi[i].y;
-
+        const double diff = gradient_predictions_multi[i].y - gradient_dataset_multi[i].y;
         omega_gradient_x1 += diff * gradient_dataset_multi[i].x1;
         omega_gradient_x2 += diff * gradient_dataset_multi[i].x2;
         beta_gradient += diff;
     }
 
+    // Average the gradients over the dataset
     omega_gradient_x1 /= gradient_dataset_multi.size();
     omega_gradient_x2 /= gradient_dataset_multi.size();
     beta_gradient /= gradient_dataset_multi.size();
 
-    omegas[0] -= eta * omega_gradient_x1;
-    omegas[1] -= eta * omega_gradient_x2;
-    beta -= eta * beta_gradient;
+    // Update parameters using the computed gradients
+    omegas[0] -= eta * omega_gradient_x1; // Update for x1
+    omegas[1] -= eta * omega_gradient_x2; // Update for x2
+    beta -= eta * beta_gradient;           // Update for bias
 }

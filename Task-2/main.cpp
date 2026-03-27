@@ -68,22 +68,22 @@ void test_gradient_regression() {
     GradientRegression model(learningRate, numEpochs, "data.csv");
 
     gradient_predictions.clear();
-    model.predict(dataset);
-    const double initial_loss = model.compute_loss(gradient_predictions, dataset);
+    model.predict(gradient_dataset);
+    const double initial_loss = model.compute_loss(gradient_predictions, gradient_dataset);
 
     for (int epoch = 0; epoch < numEpochs; ++epoch) {
         gradient_predictions.clear();
-        model.predict(dataset);
+        model.predict(gradient_dataset);
         model.update_parameters();
     }
 
     gradient_predictions.clear();
-    model.predict(dataset);
-    const double final_loss = model.compute_loss(gradient_predictions, dataset);
+    model.predict(gradient_dataset);
+    const double final_loss = model.compute_loss(gradient_predictions, gradient_dataset);
 
     std::cout << "Initial Loss: " << initial_loss << std::endl;
     std::cout << "Final Loss: " << final_loss << std::endl;
-    if (!dataset.empty() && final_loss < initial_loss) {
+    if (!gradient_dataset.empty() && final_loss < initial_loss) {
         std::cout << "Test Passed: Loss decreased." << std::endl;
     } else {
         std::cerr << "Test Failed: Loss did not decrease." << std::endl;
@@ -123,10 +123,12 @@ void test_multi_regression() {
     } else {
         std::cerr << "Test Failed: Multi-loss did not decrease." << std::endl;
     }
-    if (model.omegas[0] > 0 && model.omegas[1] > 0 && model.beta > 0) {
-        std::cout << "Test Passed: Multi-parameters are positive." << std::endl;
+    std::cout << "Learned Omegas: " << model.omegas[0] << ", " << model.omegas[1] << std::endl;
+    std::cout << "Learned Beta: " << model.beta << std::endl;
+    if (std::abs(model.omegas[0] - trueOmega) < testTolerance && std::abs(model.omegas[1] - trueOmega) < testTolerance && std::abs(model.beta - trueBeta) < testTolerance) {
+        std::cout << "Test Passed: Multi-parameters are close to true values." << std::endl;
     } else {
-        std::cerr << "Test Failed: Multi-parameters are not positive." << std::endl;
+        std::cerr << "Test Failed: Multi-parameters are not close to true values." << std::endl;
     }
 }
 

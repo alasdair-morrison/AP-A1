@@ -33,7 +33,7 @@ public:
     double get_beta() const;
 };
 
-extern std::vector<DataPoint> dataset;
+extern std::vector<DataPoint> gradient_dataset;
 extern std::vector<DataPoint> gradient_predictions;
 
 
