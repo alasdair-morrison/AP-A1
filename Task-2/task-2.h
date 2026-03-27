@@ -22,6 +22,10 @@ struct DataPoints {
     double y;
 };
 
+extern std::vector<DataPoint> normal_dataset;
+extern std::vector<DataPoint> normal_predictions;
+extern double omega; // Slope
+extern double beta;  // Intercept
 
 extern std::vector<DataPoint> gradient_dataset;
 extern std::vector<DataPoint> gradient_predictions;

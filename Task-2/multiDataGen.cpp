@@ -4,7 +4,7 @@
 #include <random>
 #include <fstream>
 
-void generateMultiDataset(int num_points, double trueOmega, double trueBeta, double noise_level) {
+void generateMultiDataset(int num_points, double trueOmega1, double trueOmega2, double trueBeta, double noise_level) {
     std::mt19937 gen(42); 
     
     std::uniform_real_distribution<double> uniform(0.0, 1.0);
@@ -23,7 +23,7 @@ void generateMultiDataset(int num_points, double trueOmega, double trueBeta, dou
 
 
         double noise = 0.25 * normal(gen);
-        double y_val = trueOmega + trueBeta * x1_val + noise;
+        double y_val = trueBeta + trueOmega2 * x2_val + trueOmega1 * x1_val + noise;
         y.push_back(y_val);
 
 
