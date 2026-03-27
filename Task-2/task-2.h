@@ -1,7 +1,10 @@
 #ifndef TASK_2_H
 #define TASK_2_H
 
+#include <iostream>
 #include <vector>
+#include <iomanip>
+#include <stdexcept>
 
 struct DataPoint {
     double x;
