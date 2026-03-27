@@ -12,9 +12,11 @@ struct DataPoint {
 };
 std::vector<DataPoint> loadDatasetSingle(const std::string& filename);
 
-void computeNormalEquation(const std::vector<DataPoint>& dataset, double& omega, double& beta);
+void computeNormalEquation(const std::vector<DataPoint>& dataset);
 
-std::vector<DataPoint> predictNormalEquation(const std::vector<DataPoint>& dataset, double omega, double beta);
+std::vector<DataPoint> predictNormalEquation(const std::vector<DataPoint>& dataset);
+
+double compute_loss(const std::vector<DataPoint>& predictions, const std::vector<DataPoint>& dataset);
 
 struct DataPoints {
     double x1;
@@ -35,7 +37,7 @@ extern std::vector<DataPoint> gradient_predictions;
 extern std::vector<DataPoints> gradient_dataset_multi;
 extern std::vector<DataPoints> gradient_predictions_multi;
 void generateDataset(int num_points, double trueOmega, double trueBeta, double noise_level);
-void generateMultiDataset(int num_points, double trueOmega1, double trueOmega2, double trueBeta, double noise_level);
+void generateMultiDataset(int num_points, double trueOmega, double trueBeta, double noise_level);
 std::vector<DataPoint> loadDatasetSingle(const std::string& filename);
 std::vector<DataPoints> loadDatasetMulti(const std::string& filename);
 class GradientRegression {
