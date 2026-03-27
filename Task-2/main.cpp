@@ -3,6 +3,8 @@
 #include <vector>
 #include <cmath>
 #include <cassert>
+#include <string>
+#include <sstream>
 
 int numPoints = 100;
 double trueOmega = 2.0;
@@ -11,6 +13,35 @@ double noiseLevel = 0.5;
 double testTolerance = 0.5;
 double learningRate = 0.0001;
 int numEpochs = 5000;
+
+template <typename T>
+T readValueOrDefault(const std::string& prompt, T defaultValue) {
+    std::cout << prompt << " [default: " << defaultValue << "]: ";
+    std::string line;
+    std::getline(std::cin, line);
+
+    if (line.empty()) {
+        return defaultValue;
+    }
+
+    std::stringstream ss(line);
+    T value;
+    if (ss >> value && ss.eof()) {
+        return value;
+    }
+
+    std::cout << "Invalid input. Using default value: " << defaultValue << std::endl;
+    return defaultValue;
+}
+
+void configureRunParametersFromConsole() {
+    std::cout << "Configure run parameters (press Enter to keep defaults)" << std::endl;
+    trueOmega = readValueOrDefault<double>("trueOmega", trueOmega);
+    trueBeta = readValueOrDefault<double>("trueBeta", trueBeta);
+    noiseLevel = readValueOrDefault<double>("noiseLevel", noiseLevel);
+    numEpochs = readValueOrDefault<int>("number of epochs", numEpochs);
+    learningRate = readValueOrDefault<double>("learning rate", learningRate);
+}
 
 void test_gradient_regression() {
     std::cout << "Starting Gradient Regression Test..." << std::endl;
@@ -78,6 +109,7 @@ void test_multi_regression() {
 }
 
 int main() {
+    configureRunParametersFromConsole();
     generateDataset(numPoints, trueOmega, trueBeta, noiseLevel);
     test_gradient_regression();
     return 0;
