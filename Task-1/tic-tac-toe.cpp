@@ -8,8 +8,8 @@ char board[3][3] = {
     {'.', '.', '.'}
 };
 
+//Function to print out current 3x3 board
 void printBoard(char board[3][3]){
-
 std::cout<<"\n";
 for(int i = 0; i<3; i++){
     for(int j = 0; j<3; j++){
@@ -20,7 +20,7 @@ for(int i = 0; i<3; i++){
 }
 
 
-
+//function to allow player to choose square
 void playerMove(char b[3][3], char p) {
     int move{0};
 
@@ -28,14 +28,17 @@ void playerMove(char b[3][3], char p) {
         std::cout << "Enter your move (1-9) using numeric keypad layout): ";
         std::cin >> move;
 
+        //Checks if user has entered number within acceptable range
         if (move < 1 or move > 9) {
             std::cout << "Invalid number, try again.\n";
             continue;
         }
 
+        //converts input into rows and coloumbs to use with 2d-array
         int row = 2 - (move - 1) / 3;
         int col = (move - 1) % 3;
 
+        //checks if square is empty
         if (b[row][col] != '.') {
             std::cout << "Invalid move, try again.\n";
         }
@@ -46,18 +49,20 @@ void playerMove(char b[3][3], char p) {
     }
 }
 
+//Function for AI
 void AIMove(char b[3][3], char p) {
-    int move{0};
 
     while (true) {
+        //generates random number between 1-9
         std::mt19937 gen(std::random_device{}()); // random seed
         std::uniform_int_distribution<int> dist(1, 9); // range [1, 9]
-
         int move = dist(gen);
 
+        //converts into row s and coloumbs to use with 2d-array
         int row = 2 - (move - 1) / 3;
         int col = (move - 1) % 3;
 
+        //makes sure square isn't full
         if (b[row][col] == '.') {
             b[row][col] = p;
             return;
