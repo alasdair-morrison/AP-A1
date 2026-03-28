@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random>
 
 bool play{true};
 char board[3][3] = {
@@ -8,16 +9,6 @@ char board[3][3] = {
 };
 
 void printBoard(char board[3][3]){
-// std::cout << 
-//        "     I     I     \n"
-//        "     I     I     \n"
-//        "_____I_____I_____\n"
-//        "     I     I     \n"
-//        "     I     I     \n"
-//        "_____I_____I_____\n"
-//        "     I     I     \n"
-//        "     I     I     \n"
-//        "     I     I     \n";
 
 std::cout<<"\n";
 for(int i = 0; i<3; i++){
@@ -45,12 +36,29 @@ void playerMove(char b[3][3], char p) {
         int row = 2 - (move - 1) / 3;
         int col = (move - 1) % 3;
 
-        std::cout << b[row][col];
-
         if (b[row][col] != '.') {
             std::cout << "Invalid move, try again.\n";
         }
         else {
+            b[row][col] = p;
+            return;
+        }
+    }
+}
+
+void AIMove(char b[3][3], char p) {
+    int move{0};
+
+    while (true) {
+        std::mt19937 gen(std::random_device{}()); // random seed
+        std::uniform_int_distribution<int> dist(1, 9); // range [1, 9]
+
+        int move = dist(gen);
+
+        int row = 2 - (move - 1) / 3;
+        int col = (move - 1) % 3;
+
+        if (b[row][col] == '.') {
             b[row][col] = p;
             return;
         }
@@ -98,12 +106,34 @@ bool checkWinCons(char a[3][3], char p){
 
 int main(){
 
-    //printBoard();
-
     while(play==true){
         int i = 0;
         bool winnercheck = false;
         char playerturn='x';
+
+        int input{3};
+        while(input != 2 && input != 1){
+            std::cout << "Play AI or Person (1/2)? " ;
+            std::cin >> input;
+        }
+
+        if(input==1){
+            while(i<9 && winnercheck == false){
+                if(i%2==0){
+                    playerturn='x';
+                    playerMove(board,playerturn);
+                }
+                else{
+                    playerturn='o';
+                    AIMove(board,playerturn);
+                }
+                printBoard(board);
+                winnercheck = checkWinCons(board,playerturn);
+                i++;
+            }
+        }
+
+        if(input==2){
             while(i<9 && winnercheck == false){
                 if(i%2==0){playerturn='x';}
                 else{playerturn='o';}
@@ -111,11 +141,13 @@ int main(){
                 printBoard(board);
                 winnercheck = checkWinCons(board,playerturn);
                 i++;
-        }
-        if (winnercheck == true){
-            std::cout<< playerturn << " has won!\n";
-        }
+            }
+        }  
+
+        //Print win situation
+        if (winnercheck == true){std::cout<< playerturn << " has won!\n";}
         else{std::cout<<"The match was a draw!\n";}
+
         play = checkPlayAgain();
     }
     std::cout <<"Thank you for playing!!";
