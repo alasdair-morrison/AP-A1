@@ -57,6 +57,13 @@ void playerMove(char b[3][3], char p) {
     }
 }
 
+void resetboard(char a[3][3]){
+    for(int i = 0; i<3; i++){
+        for(int j = 0; j<3; j++){
+            a[i][j]='.';
+        }
+    }
+}
 
 bool checkPlayAgain(){
     char input{};
@@ -67,6 +74,7 @@ bool checkPlayAgain(){
             std::cout << "Invalid input, y/n only \n";
         }
         else if(input == 'y'){
+            resetboard(board);
             return true;
         }
         else{
@@ -74,6 +82,7 @@ bool checkPlayAgain(){
         } 
     } 
 }
+
 
 bool checkWinCons(char a[3][3], char p){
     for(int i=0; i<3; i++){
@@ -101,15 +110,13 @@ int main(){
                 playerMove(board,playerturn);
                 printBoard(board);
                 winnercheck = checkWinCons(board,playerturn);
-                std::cout << winnercheck,"winnercheck\n";
                 i++;
         }
         if (winnercheck == true){
-            std::cout<< playerturn," has won!\n";
+            std::cout<< playerturn << " has won!\n";
         }
         else{std::cout<<"The match was a draw!\n";}
         play = checkPlayAgain();
-        for(int i=0;i<9;i++){playerMove(board,'.');}
     }
     std::cout <<"Thank you for playing!!";
 }
