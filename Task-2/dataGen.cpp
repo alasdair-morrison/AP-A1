@@ -6,7 +6,7 @@
 
 //Function to generate a CSV file with one X-coord and one Y-coord for simple-linear regression formula
 void generateDataset(int num_points, double trueOmega, double trueBeta, double noise_level) {
-    //Creates random number generator to create datapoints
+    //Creates random number generator to create datapoints, using special seed "42" (;
     std::mt19937 gen(42); 
     std::uniform_real_distribution<double> uniform(0.0, 1.0);
     std::normal_distribution<double> normal(0.0, noise_level);
